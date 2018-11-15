@@ -1,0 +1,816 @@
+'LOG ON SYSTEM 
+Imports System.Data.OleDb
+Imports System.IO
+
+Public Class logonform
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles logonbtn.Click
+        'a presence check to ensure all fields are completed
+        If txtpassword.Text = "" Or txtusername.Text = "" Then
+            MsgBox("Please Complete All Fields!")
+        Else
+            Try
+                Dim myconnection As OleDbConnection
+                myconnection = New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=D:\usernpass.accdb")
+                Dim mycommand As OleDbCommand
+                mycommand = New OleDbCommand("SELECT username, password FROM usernames WHERE username = @username AND password = @password", myconnection)
+                Dim uname As New OleDbParameter("@username", SqlDbType.VarChar)
+                Dim uPassword As New OleDbParameter("@Password", SqlDbType.VarChar)
+                uname.Value = txtusername.Text
+                uPassword.Value = txtpassword.Text
+                mycommand.Parameters.Add(uname)
+                mycommand.Parameters.Add(uPassword)
+                mycommand.Connection.Open()
+                Dim myreader As OleDbDataReader = mycommand.ExecuteReader(CommandBehavior.Default)
+                'checks user input against database
+                Dim login As Object = 0
+                If myreader.HasRows Then
+                    myreader.Read()
+                    login = myreader(login)
+                End If
+                If login = Nothing Then
+                    MsgBox("Login has failed, Try Again.", MsgBoxStyle.Critical)
+                    txtusername.Clear()
+                    txtpassword.Clear()
+                    txtusername.Focus()
+
+                Else
+                    myreader.Close()
+                    MsgBox("Successfully Logged In!", MsgBoxStyle.Information)
+                    txtusername.Text = ""
+                    txtpassword.Text = ""
+                    MainScreen.Show()
+                    Me.Close()
+
+                End If
+
+                mycommand.Dispose()
+                myconnection.Close()
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK)
+
+            End Try
+
+        End If
+    End Sub
+
+    Private Sub btnnewacc_Click(sender As Object, e As EventArgs) Handles btnnewacc.Click
+        NewAccForm.Visible = True
+        Me.Visible = False
+    End Sub
+
+    Private Sub logonform_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
+End Class
+
+
+
+'MAIN SCREEN
+Imports System.Data.OleDb
+Imports System.Data.SqlClient
+
+Public Class MainScreen
+    Dim currentanimal As String
+    Dim thirst As Integer = 100
+    Dim hunger As Integer = 100
+    Dim clean As Integer = 100
+    Dim love As Integer = 100
+    Dim fun As Integer = 100
+    Dim username As String
+    Dim cash As Integer
+    Dim happiness As Integer
+    Dim currentmoneyrate As Integer
+    Dim provider As String
+    Dim dataFile As String
+    Dim connString As String
+    Dim con As OleDbConnection = New OleDbConnection
+
+    Private Sub CalcHappiness()
+        happiness = (hunger + thirst + fun + clean + love) / 5
+        haplabel.Text = happiness & "/ 100"
+    End Sub
+
+    Private Sub GenerateMoney() Handles cashtimer.Tick
+        If happiness > 80 Then
+            cash = cash + 10
+            lblMoney.Text = "Money:" & cash & " /100"
+        Else
+            cashtimer.Stop()
+        End If
+
+    End Sub
+
+    Private Sub DepleteHunger() Handles FoodTimer.Tick
+        ' This integer variable keeps track of the 
+        ' current hunger value.
+        If hunger > 0 Then
+            ' Display the hunger
+            ' by updating the hunger label.
+            hunger -= 1
+            HLabel.Text = hunger & " /100"
+            CalcHappiness()
+        Else
+            FoodTimer.Stop()
+        End If
+
+    End Sub
+
+    Private Sub DepleteHygiene() Handles WashTimer.Tick
+        ' This integer variable keeps track of the 
+        ' current hygiene value.
+        If clean > 0 Then
+            ' Display the Hygiene
+            ' by updating the hygiene label.
+            clean -= 1
+            Clabel.Text = clean & " /100"
+            CalcHappiness()
+        Else
+            WashTimer.Stop()
+        End If
+
+    End Sub
+
+    Private Sub DepleteThirst() Handles ThirstTimer.Tick
+        ' This integer variable keeps track of the 
+        ' current thirst value.
+        If thirst > 0 Then
+            ' Display the thirst
+            ' by updating the thirst label.
+            thirst -= 1
+            Tlabel.Text = thirst & " /100"
+            CalcHappiness()
+        Else
+            ThirstTimer.Stop()
+        End If
+    End Sub
+
+    Private Sub DepleteFun() Handles FunTimer.Tick
+        ' This integer variable keeps track of the 
+        ' current fun value.
+        If fun > 0 Then
+            ' Display the fun
+            ' by updating the fun label.
+            fun -= 1
+            Flabel.Text = fun & " /100"
+            CalcHappiness()
+        Else
+            FunTimer.Stop()
+        End If
+    End Sub
+
+    Private Sub DepleteLove() Handles LoveTimer.Tick
+        ' This integer variable keeps track of the 
+        ' love value.
+        If love > 0 Then
+            ' Display the love
+            ' by updating the love label.
+            love -= 1
+            LLabel.Text = love & " /100"
+            CalcHappiness()
+        Else
+            LoveTimer.Stop()
+        End If
+    End Sub
+
+    Private Sub MainScreen_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        provider = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=D:\usernpass.accdb"
+        connString = provider
+        con.ConnectionString = connString
+        con.Open()
+        Try
+            Dim MoneySQL As New OleDbCommand("SELECT Cash FROM Save WHERE @username = username")
+            Dim myreader As OleDbDataReader = MoneySQL.ExecuteReader(CommandBehavior.Default)
+            myreader.Read()
+            Dim cashqu As Object = 0
+            If myreader.HasRows Then
+                myreader.Read()
+                cashqu = myreader(cashqu)
+                cashqu = cash
+                lblMoney.Text = "Money: " & cash
+            End If
+            If cashqu = Nothing Then
+                MsgBox("Cash Connection Failed, Money Set to $1000", MsgBoxStyle.Critical)
+
+            End If
+
+            myreader.Close()
+        Catch ex As Exception
+
+        End Try
+        'retrieves the user's current animal from the database along with its sprite.
+        Dim myconnection As OleDbConnection
+        myconnection = New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=D:\usernpass.accdb")
+        Dim mycommand As OleDbCommand
+        mycommand = New OleDbCommand("SELECT Animal, MoneyRate, Sprite, FROM Animals WHERE AnimalName = @Animal", myconnection)
+        Dim Animal As New OleDbParameter("AnimalName", SqlDbType.VarChar)
+        Dim MoneyRate As New OleDbParameter("MoneyRate", SqlDbType.Float)
+        Dim Sprite As New OleDbParameter("Sprite", SqlDbType.Image)
+        Animal.Value = currentanimal
+        MoneyRate.Value = currentmoneyrate
+        mycommand.Parameters.Add(currentanimal)
+        mycommand.Parameters.Add(currentmoneyrate)
+        mycommand.Parameters.Add(Sprite)
+        mycommand.Connection.Open()
+        Dim animalreader As OleDbDataReader = mycommand.ExecuteReader(CommandBehavior.Default)
+
+        Try
+            Dim Playedbefore As New OleDbCommand("SELECT Save.[Current Animal]
+        FROM Save; WHERE username = @username")
+            Dim myreader2 As OleDbDataReader = mycommand.ExecuteReader(CommandBehavior.Default)
+            myreader2.Read()
+            'Checks if player currently owns an animal, if not they are taken to the store.
+            If myreader2.IsDBNull(10) = True Then
+                formstore.Show()
+                Me.Hide()
+            End If
+
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK)
+        End Try
+
+    End Sub
+
+
+
+    Private Sub btnwater_Click(sender As Object, e As EventArgs) Handles btnwater.Click
+
+        If thirst < 80 Then
+            thirst = thirst + 20
+        Else : thirst = 100
+        End If
+
+        If cash > 10 Then
+            cash = cash - 10
+        Else : cash = 0
+        End If
+
+        Tlabel.Text = thirst & "/100"
+        CalcHappiness()
+
+    End Sub
+
+    Private Sub btnhunger_Click(sender As Object, e As EventArgs) Handles btnfeed.Click
+        If hunger < 80 Then
+            hunger = hunger + 20
+        Else : hunger = 100
+        End If
+
+        If cash > 20 Then
+            cash = cash - 20
+        Else : cash = 0
+        End If
+
+        HLabel.Text = hunger & "/100"
+        CalcHappiness()
+
+        lblMoney.Text = cash & "£"
+    End Sub
+
+    Private Sub btnwash_Click(sender As Object, e As EventArgs) Handles btnwash.Click
+        If clean < 25 Then
+            clean = clean + 75
+        Else : clean = 100
+        End If
+        Clabel.Text = clean & "/100"
+        CalcHappiness()
+
+        Me.Hide()
+        Wash.Show()
+    End Sub
+
+    Private Sub btnwalk_Click(sender As Object, e As EventArgs) Handles btnwalk.Click
+        If fun < 50 Then
+            fun = fun + 50
+        Else : fun = 100
+        End If
+        Flabel.Text = fun & "/100"
+        CalcHappiness()
+
+        Walkiies.Show()
+        Me.Hide()
+    End Sub
+
+    Private Sub btncuddle_Click(sender As Object, e As EventArgs) Handles btncuddle.Click
+        If love < 50 Then
+            love = love + 50
+        Else : love = 100
+        End If
+
+        Llabel.Text = love & "/100"
+        CalcHappiness()
+
+        Me.Hide()
+        Cuddle.Show()
+    End Sub
+
+    Private Sub fishbowl_Click(sender As Object, e As EventArgs) Handles fishbowlpic.Click
+        Fishbowl.Show()
+        Me.Hide()
+    End Sub
+
+    Private Sub store_Click(sender As Object, e As EventArgs) Handles PictureBox3.Click
+        formstore.Show()
+        Me.Hide()
+    End Sub
+
+    Private Sub FoodTimer_Tick(sender As Object, e As EventArgs) Handles FoodTimer.Tick
+        FoodTimer.Start()
+        Dim F As Integer = 1000
+        If FoodTimer.Equals(F) Then
+            hunger = hunger - 1
+            F = F + 1000
+            HLabel.Text = (hunger & "/100")
+        End If
+    End Sub
+
+    Private Sub saveicon_Click(sender As Object, e As EventArgs) Handles SavePic.Click
+        provider = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=D:\usernpass.accdb"
+        connString = provider
+        con.ConnectionString = connString
+        con.Open()
+        Dim str As String
+        Dim saveID As Integer
+        saveID = Rnd()
+        str = "INSERT INTO save([SaveID], [Username],[Cash],[Happiness], [Hunger], [Thirst], [Love], [Hygiene], [Animal]) Values (?,?,?,?,?,?,?,?,?)"
+        Dim cmd As OleDbCommand = New OleDbCommand(str, con)
+        Dim check As String
+
+        check = "SELECT Username FROM Save WHERE Username = " & username & ""
+
+        Dim cmd2 As OleDbCommand = New OleDbCommand(check, con)
+
+        cmd2.ExecuteReader("Username")
+
+        MsgBox("A Save file already exists for this user, do you wish to overwrite it?")
+        cmd.Parameters.Add(New OleDbParameter("SaveID", CType(saveID, Single)))
+        cmd.Parameters.Add(New OleDbParameter("Username", CType(username, String)))
+        cmd.Parameters.Add(New OleDbParameter("Cash", CType(cash, Integer)))
+        cmd.Parameters.Add(New OleDbParameter("Happiness", CType(happiness, Integer)))
+        cmd.Parameters.Add(New OleDbParameter("Hunger", CType(hunger, Integer)))
+        cmd.Parameters.Add(New OleDbParameter("Thirst", CType(thirst, Integer)))
+        cmd.Parameters.Add(New OleDbParameter("Love", CType(love, Integer)))
+        cmd.Parameters.Add(New OleDbParameter("Hygiene", CType(clean, Integer)))
+        cmd.Parameters.Add(New OleDbParameter("Animal", CType(currentanimal, String)))
+
+        MsgBox("Saved Successfully")
+
+        Try
+            cmd.ExecuteNonQuery()
+            cmd.Dispose()
+            con.Close()
+        Catch ex As Exception
+            MsgBox(ex.Message)
+
+
+        End Try
+
+        cmd.Parameters.Add(New OleDbParameter("SaveID", CType(saveID, Single)))
+        cmd.Parameters.Add(New OleDbParameter("Username", CType(username, String)))
+        cmd.Parameters.Add(New OleDbParameter("Cash", CType(cash, Integer)))
+        cmd.Parameters.Add(New OleDbParameter("Happiness", CType(happiness, Integer)))
+        cmd.Parameters.Add(New OleDbParameter("Hunger", CType(hunger, Integer)))
+        cmd.Parameters.Add(New OleDbParameter("Thirst", CType(thirst, Integer)))
+        cmd.Parameters.Add(New OleDbParameter("Love", CType(love, Integer)))
+        cmd.Parameters.Add(New OleDbParameter("Hygiene", CType(clean, Integer)))
+        cmd.Parameters.Add(New OleDbParameter("Animal", CType(currentanimal, String)))
+
+        MsgBox("Saved Successfully")
+
+        Try
+            cmd.ExecuteNonQuery()
+            cmd.Dispose()
+            con.Close()
+        Catch ex As Exception
+            MsgBox(ex.Message)
+
+
+        End Try
+
+    End Sub
+
+    Private Sub moneylbl_Click(sender As Object, e As EventArgs) Handles lblMoney.Click
+        cash = cash + currentmoneyrate
+    End Sub
+End Class
+
+'NEW ACCOUNT 
+Imports System.Data.OleDb
+
+Public Class NewAccForm
+    Dim provider As String
+    Dim dataFile As String
+    Dim connString As String
+    Dim con As OleDbConnection = New OleDbConnection
+
+    Private Sub btnclose_Click(sender As Object, e As EventArgs) Handles btnclose.Click
+        Me.Close()
+        logonform.Visible = True
+    End Sub
+
+    Private Sub btncreate_Click(sender As Object, e As EventArgs) Handles btncreate.Click
+        provider = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=D:\usernpass.accdb"
+        connString = provider
+        con.ConnectionString = connString
+        con.Open()
+        Dim str As String
+        str = "INSERT INTO usernames([Username],[Password],[FullName]) Values (?,?,?)"
+        Dim cmd As OleDbCommand = New OleDbCommand(str, con)
+        cmd.Parameters.Add(New OleDbParameter("Username", CType(txtusername.Text, String)))
+        cmd.Parameters.Add(New OleDbParameter("Password", CType(txtpassword.Text, String)))
+        cmd.Parameters.Add(New OleDbParameter("FullName", CType(txtfirstname.Text, String)))
+
+        MsgBox("Account Created!")
+
+        Try
+            cmd.ExecuteNonQuery()
+            cmd.Dispose()
+            con.Close()
+            txtfirstname.Clear()
+            txtusername.Clear()
+            txtpassword.Clear()
+        Catch ex As Exception
+            MsgBox(ex.Message)
+
+        End Try
+
+        Me.Close()
+        MainScreen.Show()
+
+    End Sub
+
+End Class
+
+'FISHBOWL
+Public Class Fishbowl
+    Dim thirst As Integer = 60
+    Dim hunger As Integer = 60
+    Dim clean As Integer = 60
+    Dim love As Integer = 60
+    Dim fun As Integer = 60
+    Dim happiness As Integer = (thirst + hunger + fun + love + clean) / 5
+    Dim moneyrate As Integer
+    Dim cash As Integer
+    Private Sub Fishbowl_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
+
+    Private Sub PictureBox2_Click(sender As Object, e As EventArgs) Handles PictureBox2.Click
+        Me.Hide()
+        MainScreen.Show()
+    End Sub
+
+    Private Sub PictureBox3_Click(sender As Object, e As EventArgs) Handles PictureBox3.Click
+        Me.Hide()
+        formstore.Show()
+
+    End Sub
+
+    Private Sub PictureBox1_Click(sender As Object, e As EventArgs) Handles PictureBox1.Click
+
+    End Sub
+
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        If clean < 25 Then
+            clean = clean + 75
+        Else : clean = 100
+        End If
+        Label4.Text = clean & "/100"
+        happiness = (thirst + hunger + fun + love + clean) / 5
+        Label2.Text = happiness & "/100"
+        Me.Hide()
+        Wash.Show()
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        If hunger < 80 Then
+            hunger = hunger + 20
+        Else : hunger = 100
+        End If
+
+        If cash > 20 Then
+            cash = cash - 20
+        Else : cash = 0
+        End If
+
+        Label6.Text = hunger & "/100"
+        happiness = (thirst + hunger + fun + love + clean) / 5
+        Label2.Text = happiness & "/100"
+        Label13.Text = cash & "£"
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+
+        If love < 50 Then
+            love = love + 50
+        Else : love = 100
+        End If
+
+        Label3.Text = love & "/100"
+        happiness = (thirst + hunger + fun + love + clean) / 5
+        Label2.Text = happiness & "/100"
+        Me.Hide()
+        Cuddle.Show()
+    End Sub
+End Class
+
+'CUDDLE
+Public Class Cuddle
+    Dim love As Integer
+    Private Sub btnclose_Click(sender As Object, e As EventArgs) Handles btnclose.Click
+        Me.Close()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub Cuddle_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        btnclose.Enabled = False
+    End Sub
+
+    Private Sub Label1_Click(sender As Object, e As EventArgs) Handles Label1.Click
+
+    End Sub
+
+    Private Sub AnimalPic_Click(sender As Object, e As EventArgs) Handles AnimalPic.Click
+        love = love + 10
+        Label1.Text = "Affection: " & love
+        If love = 100 Then
+            btnclose.Enabled = True
+            Label1.Text = "Friendship Improved!"
+            Label1.Text = FontStyle.Bold
+            Label1.Text = FontStyle.Italic
+        End If
+    End Sub
+End Class
+
+'WASH
+
+Public Class Wash
+    Dim hygiene As Integer
+    Private Sub btnclose_Click(sender As Object, e As EventArgs) Handles btnclose.Click
+        Me.Close()
+        MainScreen.Show()
+    End Sub
+
+    Private Sub Wash_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        btnrinse.Enabled = False
+        lbl.Visible = False
+        lblclean.Visible = False
+        btnclose.Enabled = False
+
+    End Sub
+
+    Private Sub btnlather_Click(sender As Object, e As EventArgs) Handles btnlather.Click
+
+        hygiene = hygiene + 10
+        lblHygeine.Text = "HYGIENE: " & hygiene
+        btnrinse.Enabled = True
+        btnlather.Enabled = False
+        lbl.Visible = True
+        If hygiene = 100 Then
+            btnlather.Enabled = False
+            btnrinse.Enabled = False
+            lblclean.Visible = True
+            btnclose.Enabled = True
+        End If
+
+    End Sub
+
+    Private Sub btnrinse_Click(sender As Object, e As EventArgs) Handles btnrinse.Click
+
+        hygiene = hygiene + 10
+        lblHygeine.Text = "HYGIENE: " & hygiene & "/100"
+        btnlather.Enabled = True
+        btnrinse.Enabled = False
+        lbl.Visible = False
+
+        If hygiene = 100 Then
+            btnlather.Enabled = False
+            btnrinse.Enabled = False
+            lblclean.Visible = True
+            btnclose.Enabled = True
+
+        End If
+    End Sub
+
+End Class
+
+'WALK
+Public Class Walkiies
+    Dim fun As Integer
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles btndone.Click
+
+        Me.Hide()
+        MainScreen.Show()
+    End Sub
+
+    Private Sub btnup_Click(sender As Object, e As EventArgs) Handles btnup.Click
+        walkpic.Top = walkpic.Top - 10
+        If fun < 100 Then
+            fun = fun + 5
+            funlabel.Text = "Fun: " & fun & "/100"
+            CheckIf100()
+        End If
+    End Sub
+
+    Private Sub btndown_Click(sender As Object, e As EventArgs) Handles btndown.Click
+        walkpic.Top = walkpic.Top + 10
+        If fun < 100 Then
+            fun = fun + 5
+            funlabel.Text = "Fun: " & fun & "/100"
+            CheckIf100()
+        End If
+    End Sub
+
+    Private Sub btnleft_Click(sender As Object, e As EventArgs) Handles btnleft.Click
+        walkpic.Left = walkpic.Left - 10
+        If fun < 100 Then
+            fun = fun + 5
+            funlabel.Text = "Fun: " & fun & "/100"
+            CheckIf100()
+        End If
+    End Sub
+
+    Private Sub btnright_Click(sender As Object, e As EventArgs) Handles btnright.Click
+        walkpic.Left = walkpic.Left + 10
+        If fun < 100 Then
+            fun = fun + 5
+            funlabel.Text = "Fun: " & fun & "/100"
+            CheckIf100()
+        End If
+    End Sub
+
+    Private Sub Walkiies_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        btndone.Enabled = False
+        MsgBox("Walk Your animal around the field! Avoid the rocks and Click 'Done' when you're finished.")
+    End Sub
+
+    Private Sub CheckIf100()
+        If fun = 100 Then
+            funlabel.Text = "Animal Fully satisfied!"
+            btndone.Enabled = True
+        End If
+    End Sub
+End Class
+
+'STORE
+
+Public Class formstore
+    Public animal As String
+    Public cash As Integer
+
+
+    Private Sub btnclose_Click(sender As Object, e As EventArgs) Handles btnclose.Click
+        Me.Hide()
+        MainScreen.Show()
+    End Sub
+
+    Private Sub PictureBox14_Click(sender As Object, e As EventArgs) Handles PictureBox14.Click
+        animal = "rabbit"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox15_Click(sender As Object, e As EventArgs) Handles PictureBox15.Click
+        animal = "guineapig"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox16_Click(sender As Object, e As EventArgs) Handles PictureBox16.Click
+        animal = "hamster"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox17_Click(sender As Object, e As EventArgs) Handles PictureBox17.Click
+        animal = "cat"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox11_Click(sender As Object, e As EventArgs) Handles PictureBox11.Click
+        animal = "dog"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox12_Click(sender As Object, e As EventArgs) Handles PictureBox12.Click
+        animal = "koala"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox13_Click(sender As Object, e As EventArgs) Handles PictureBox13.Click
+        animal = "snake"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox7_Click(sender As Object, e As EventArgs) Handles PictureBox7.Click
+        animal = "crocodile"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox18_Click(sender As Object, e As EventArgs) Handles PictureBox18.Click
+        animal = "lizard"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox8_Click(sender As Object, e As EventArgs) Handles PictureBox8.Click
+        animal = "monkey"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox9_Click(sender As Object, e As EventArgs) Handles PictureBox9.Click
+        animal = "lemur"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox10_Click(sender As Object, e As EventArgs) Handles PictureBox10.Click
+        animal = "raccoon"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox3_Click(sender As Object, e As EventArgs) Handles PictureBox3.Click
+        animal = "rabbit"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox4_Click(sender As Object, e As EventArgs) Handles PictureBox4.Click
+        animal = "rabbit"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox5_Click(sender As Object, e As EventArgs) Handles PictureBox5.Click
+        animal = "rabbit"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox6_Click(sender As Object, e As EventArgs) Handles PictureBox6.Click
+        animal = "rabbit"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox20_Click(sender As Object, e As EventArgs) Handles PictureBox20.Click
+        animal = "rabbit"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub PictureBox19_Click(sender As Object, e As EventArgs) Handles PictureBox19.Click
+        animal = "rabbit"
+        cash = cash - 100
+        Me.Hide()
+        MainScreen.Show()
+
+    End Sub
+
+    Private Sub formstore_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
+End Class
