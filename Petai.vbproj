@@ -1,0 +1,343 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FDE4A6E7-786A-4988-BE50-3C300B17D96B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>Petai.My.MyApplication</StartupObject>
+    <RootNamespace>Petai</RootNamespace>
+    <AssemblyName>Petai</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>Petai.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>Petai.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AnimalDataSet.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AnimalDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Cuddle.Designer.vb">
+      <DependentUpon>Cuddle.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Cuddle.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Store.Designer.vb">
+      <DependentUpon>Store.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Store.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="usernpassDataSet.vb">
+      <DependentUpon>usernpassDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="usernpassDataSet1.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>usernpassDataSet1.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Wash.Designer.vb">
+      <DependentUpon>Wash.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Wash.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogOn.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogOn.Designer.vb">
+      <DependentUpon>LogOn.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewAcc.Designer.vb">
+      <DependentUpon>NewAcc.vb</DependentUpon>
+    </Compile>
+    <Compile Include="NewAcc.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainScreen.Designer.vb">
+      <DependentUpon>MainScreen.vb</DependentUpon>
+    </Compile>
+    <Compile Include="MainScreen.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Fishbowl.Designer.vb">
+      <DependentUpon>Fishbowl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Fishbowl.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Walkiies.Designer.vb">
+      <DependentUpon>Walkiies.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Walkiies.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="usernpassDataSet.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>usernpassDataSet.xsd</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Cuddle.resx">
+      <DependentUpon>Cuddle.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Store.resx">
+      <DependentUpon>Store.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wash.resx">
+      <DependentUpon>Wash.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Walkiies.resx">
+      <DependentUpon>Walkiies.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LogOn.resx">
+      <DependentUpon>LogOn.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewAcc.resx">
+      <DependentUpon>NewAcc.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainScreen.resx">
+      <DependentUpon>MainScreen.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Fishbowl.resx">
+      <DependentUpon>Fishbowl.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AnimalDataSet.xsc">
+      <DependentUpon>AnimalDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="AnimalDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>AnimalDataSet.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="AnimalDataSet.xss">
+      <DependentUpon>AnimalDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="App.config" />
+    <None Include="usernpassDataSet.xsc">
+      <DependentUpon>usernpassDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="usernpassDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>usernpassDataSet.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="usernpassDataSet.xss">
+      <DependentUpon>usernpassDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="usernpassDataSet1.xsc">
+      <DependentUpon>usernpassDataSet1.xsd</DependentUpon>
+    </None>
+    <None Include="usernpassDataSet1.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>usernpassDataSet1.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="usernpassDataSet1.xss">
+      <DependentUpon>usernpassDataSet1.xsd</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\K Love State.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Monkey Normal State.png" />
+    <None Include="Resources\GP Normal State.png" />
+    <None Include="Resources\SR Normal State.png" />
+    <None Include="Resources\fishbowl.jpg" />
+    <None Include="Resources\settings.png" />
+    <None Include="Resources\Shop.png" />
+    <None Include="Resources\W Normal State.png" />
+    <None Include="Resources\W Sad State.png" />
+    <None Include="Resources\W Normal State1.png" />
+    <None Include="Resources\W Love State.png" />
+    <None Include="Resources\W Happy State.png" />
+    <None Include="Resources\Uni Sad State.png" />
+    <None Include="Resources\Uni Normal State.png" />
+    <None Include="Resources\Uni Love State.png" />
+    <None Include="Resources\Uni Happy State.png" />
+    <None Include="Resources\Tiger Sad State.png" />
+    <None Include="Resources\Tiger Normal State.png" />
+    <None Include="Resources\Tiger Love #State.png" />
+    <None Include="Resources\Tiger Happy State.png" />
+    <None Include="Resources\SR Sad Sprite.png" />
+    <None Include="Resources\SR Normal State1.png" />
+    <None Include="Resources\SR Love ]#Sprite.png" />
+    <None Include="Resources\SR Happy Sprite.png" />
+    <None Include="Resources\Sn Sad State.png" />
+    <None Include="Resources\Sn Normal State.png" />
+    <None Include="Resources\Sn Love State.png" />
+    <None Include="Resources\Sn Happy State.png" />
+    <None Include="Resources\S Sad State.png" />
+    <None Include="Resources\S Normal State.png" />
+    <None Include="Resources\S Love State.png" />
+    <None Include="Resources\S Happy State.png" />
+    <None Include="Resources\Racoon Sad State.png" />
+    <None Include="Resources\Racoon Normal State.png" />
+    <None Include="Resources\Racoon Love State.png" />
+    <None Include="Resources\Racoon Happy State.png" />
+    <None Include="Resources\Monkey Sad State.png" />
+    <None Include="Resources\Monkey Normal State1.png" />
+    <None Include="Resources\Monkey Love State.png" />
+    <None Include="Resources\Monkey Happy State.png" />
+    <None Include="Resources\LNM Sad State.png" />
+    <None Include="Resources\LNM Normal State.png" />
+    <None Include="Resources\LNM Love State.png" />
+    <None Include="Resources\LNM Happy State.png" />
+    <None Include="Resources\Liz Sad State.png" />
+    <None Include="Resources\Liz Normal State.png" />
+    <None Include="Resources\Liz Love State1.png" />
+    <None Include="Resources\Liz Happy State.png" />
+    <None Include="Resources\Lion Sad State.png" />
+    <None Include="Resources\Lion Normal State.png" />
+    <None Include="Resources\Lion Love State.png" />
+    <None Include="Resources\Lion Happy State.png" />
+    <None Include="Resources\Lemur Sad State.png" />
+    <None Include="Resources\Lemur Normal State.png" />
+    <None Include="Resources\Lemur Love State.png" />
+    <None Include="Resources\Lemur Happy State.png" />
+    <None Include="Resources\K Sad State.png" />
+    <None Include="Resources\K Normal State.png" />
+    <None Include="Resources\K Love State1.png" />
+    <None Include="Resources\K Happy State.png" />
+    <None Include="Resources\HB Sad State.png" />
+    <None Include="Resources\HB Normal State.png" />
+    <None Include="Resources\HB Love State.png" />
+    <None Include="Resources\HB Happy State.png" />
+    <None Include="Resources\H Sad State.png" />
+    <None Include="Resources\H Normal State.png" />
+    <None Include="Resources\H Love State.png" />
+    <None Include="Resources\H Happy State.png" />
+    <None Include="Resources\GP Sad State.png" />
+    <None Include="Resources\GP Normal State1.png" />
+    <None Include="Resources\GP Love State.png" />
+    <None Include="Resources\GP Happy State.png" />
+    <None Include="Resources\GF Sad State.png" />
+    <None Include="Resources\GF Normal State.png" />
+    <None Include="Resources\GF Love State.png" />
+    <None Include="Resources\D Sad State.png" />
+    <None Include="Resources\D Normal State.png" />
+    <None Include="Resources\D love State.png" />
+    <None Include="Resources\D Happy State.png" />
+    <None Include="Resources\Croc Sad State.png" />
+    <None Include="Resources\Croc Normal State.png" />
+    <None Include="Resources\Croc Love State.png" />
+    <None Include="Resources\Croc Happy State.png" />
+    <None Include="Resources\C Sad State.png" />
+    <None Include="Resources\C Normal State.png" />
+    <None Include="Resources\C Love State.png" />
+    <None Include="Resources\C Happy State.png" />
+    <None Include="Resources\B Sad State.png" />
+    <None Include="Resources\B Normal State.png" />
+    <None Include="Resources\B Love State.png" />
+    <None Include="Resources\B Happy State.png" />
+    <None Include="Resources\SaveGame.png" />
+    <None Include="Resources\landicon.jpg" />
+    <None Include="Resources\1.rock-texture.jpg" />
+    <None Include="Resources\grass.jpg" />
+    <Content Include="usernpass.accdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
